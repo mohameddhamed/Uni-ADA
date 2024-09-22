@@ -22,6 +22,7 @@ begin
     --  Get(N);
     --  PerfectsInterval(N);
     --  Put_Line(Float'Image(Sinus(30.0)));
+    Put_Line ("Please provide N");
     Get (N);
     Put_Line(Integer'Image(FactRec(N)));
 end Main;
