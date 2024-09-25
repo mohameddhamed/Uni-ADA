@@ -1,0 +1,8 @@
+*
+**/.gitignore
+!*/
+!*.adb
+!*.ads
+!.gitignore
+myproj/
+hello-world/
