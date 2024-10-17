@@ -1,4 +1,4 @@
-with Ada.Text_IO, QueueP;
+with Ada.Text_IO, QueueP2;
 use Ada.Text_IO;
 
 procedure QueueDemo is
@@ -17,7 +17,7 @@ procedure QueueDemo is
    end My_Compare;
    
    
-   package My_Queue is new QueueP(Index, Elem, Arr, My_Compare);
+   package My_Queue is new QueueP2(Index, Elem, Arr, My_Compare);
    use My_Queue;
    
    procedure Print_Element(E: Elem) is
