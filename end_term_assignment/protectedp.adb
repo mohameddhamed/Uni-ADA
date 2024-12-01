@@ -41,10 +41,10 @@ package body ProtectedP is
    end Rand_Intercept_Time;
 
    protected body Print is
-      procedure Print(S: in String := "") is
+      procedure P(S: in String := "") is
       begin
          Put_Line(S);
-      end Print;
+      end P;
    end Print;
 
    protected body Catapult is

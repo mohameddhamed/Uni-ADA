@@ -29,7 +29,7 @@ package ProtectedP is
    end Rand_Intercept_Time;
 
    protected Print is
-      procedure Print(S: in String := "");
+      procedure P(S: in String := "");
    end Print;
 
    type PStr is access String;
