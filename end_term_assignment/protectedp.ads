@@ -44,8 +44,6 @@ package ProtectedP is
       Name : PStr;
    end Catapult;
 
-   type P_Catapult is access Catapult;
-   Left_Catapult, Right_Catapult : P_Catapult;
 
    protected Landing_Strip is
       entry Final_Approach;
@@ -53,5 +51,6 @@ package ProtectedP is
    private
       Aircraft_In_Landing_Sequence: Boolean := False;
    end Landing_Strip;
+   type P_Catapult is access Catapult;
 
 end ProtectedP;

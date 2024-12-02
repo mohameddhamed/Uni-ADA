@@ -4,7 +4,7 @@ use ProtectedP;
 procedure Main is
 
    task E2DAWACS is
-      entry Launch(c: in out Catapult);
+      entry Launch(c: in out P_Catapult);
       entry Recall;
       entry Connect;
       entry Disconnect;
@@ -14,7 +14,7 @@ procedure Main is
       Num_Connected_Aircrafts : Integer := 0;
    begin
       select
-         accept Launch(c: in out Catapult) do
+         accept Launch(c: in out P_Catapult) do
             c.Move_To_Position;
             Print.P("*****E2D-AWACS preparing to take off from catapult*****"); 
             delay 2.0;
@@ -45,6 +45,9 @@ procedure Main is
          end Disconnect;
 
       end select;
+   exception
+      when Tasking_Error =>
+         Print.P("Exception occered at E2DAWACS"); 
    end E2DAWACS; 
 
    task type Aircraft is
@@ -111,13 +114,59 @@ procedure Main is
             exit;
          end if;
       end loop;
+   exception
+      when Tasking_Error =>
+         Print.P("Exception occered at " & airType'Image & "-" & airNum'Image); 
    end Aircraft;
+
+   Left_Catapult, Right_Catapult : P_Catapult;
+
+   task Flight_Operations is
+      entry Init(R_Catapult : P_Catapult; L_Catapult : P_Catapult);
+   end Flight_Operations;
 
    type P_Aircraft is access Aircraft;
    type P_Aircraft_Arr  is array(Positive range <>) of P_Aircraft;
    Jet_Aircraft : P_Aircraft_Arr(1..50);
+   task body Flight_Operations is
+      airType : TAircraft;
+      Rand_Index : Integer;
+   begin
+      accept Init (R_Catapult : P_Catapult; L_Catapult : P_Catapult) do
+         for I in Jet_Aircraft'Range loop
+            Jet_Aircraft(I) := new Aircraft;
+            airType := Gen_Rand_Aircraft.Generate;
+            if I mod 2 = 0 then
+               Jet_Aircraft(I).Init(airType, I, Left_Catapult);
+            else
+               Jet_Aircraft(I).Init(airType, I, Right_Catapult);
+            end if;
+         end loop;
+
+         E2DAWACS.Launch (Left_Catapult);
+         for I in Jet_Aircraft'Range loop
+            Jet_Aircraft(I).Start_Sortie;
+         end loop;
+         Print.P ("***** All Aircraft starting sorties *****");
+
+         for I in 1 .. 8 loop
+            Rand_Index := 1 + Gen_Rand_Num.Generate mod 50;
+            Jet_Aircraft(Rand_Index).Intercept;
+         end loop;
+
+         E2DAWACS.Recall;
+      end Init;
+   exception
+      when Tasking_Error =>
+         Print.P("Exception occered at Flight Operations"); 
+   end Flight_Operations;
 
 
 begin
-   null;
+   Gen_Rand_Aircraft.Init;
+   Rand_Intercept_Time.Init;
+   Gen_Rand_Num.Init;
+   Left_Catapult.Init("Left Catapult");
+   Right_Catapult.Init("Right Catapult");
+   Flight_Operations.Init(Left_Catapult, Right_Catapult);
 end Main;
