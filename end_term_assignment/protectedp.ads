@@ -4,7 +4,9 @@ use Ada.Text_IO;
 
 package ProtectedP is
    type TAircraft is (F35C, FA18D, FA18E);
-   package Rand_Integer is new Ada.Numerics.Discrete_Random(Integer);
+   type New_Integer is new Integer range 1 .. 50;
+
+   package Rand_Integer is new Ada.Numerics.Discrete_Random(New_Integer);
    package Rand_TAircraft is new Ada.Numerics.Discrete_Random(TAircraft);
    
    protected Gen_Rand_Num is
